@@ -1,0 +1,28 @@
+name: "Helm template check"
+description: "Verify helm generation template"
+inputs:
+  values-staging:
+    description: Helm values for staging
+    required: true
+    default: "chart/values-staging.yaml"
+  values-production:
+    description: Helm values for production
+    required: true
+    default: "chart/values-production.yaml"
+  service-name:
+      description: Defining service-name for charts
+      required: true
+      default: "${{ github.event.repository.name }}"
+runs:
+  using: "composite"
+  steps:
+    - name: Post to Slack
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Helm template (staging)
+      shell: bash
+      run: helm template ${{inputs.service-name}} chart --debug -f ${{ inputs.values-staging }}
+    - name: Helm template (production)
+      shell: bash
+      run: helm template ${{inputs.service-name}} chart --debug -f ${{ inputs.values-production }}
