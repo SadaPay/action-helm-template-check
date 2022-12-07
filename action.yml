@@ -1,6 +1,14 @@
 name: "Helm template check"
 description: "Verify helm generation template"
 inputs:
+  chart-path:
+      description: Path of the helm chart
+      required: false
+      default: chart
+  service-name:
+      description: Defining service-name for charts
+      required: true
+      default: "${{ github.event.repository.name }}"
   values-staging:
     description: Helm values for staging
     required: true
@@ -9,10 +17,6 @@ inputs:
     description: Helm values for production
     required: true
     default: "chart/values-production.yaml"
-  service-name:
-      description: Defining service-name for charts
-      required: true
-      default: "${{ github.event.repository.name }}"
 runs:
   using: "composite"
   steps:
@@ -22,7 +26,7 @@ runs:
         fetch-depth: 0
     - name: Helm template (staging)
       shell: bash
-      run: helm template ${{inputs.service-name}} chart --debug -f ${{ inputs.values-staging }}
+      run: helm template ${{inputs.service-name}} ${{inputs.chart-path}} --debug -f ${{ inputs.values-staging }}
     - name: Helm template (production)
       shell: bash
-      run: helm template ${{inputs.service-name}} chart --debug -f ${{ inputs.values-production }}
+      run: helm template ${{inputs.service-name}} ${{inputs.chart-path}} --debug -f ${{ inputs.values-production }}
