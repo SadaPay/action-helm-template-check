@@ -2,13 +2,17 @@ name: "Helm template check"
 description: "Verify helm generation template"
 inputs:
   chart-path:
-      description: Path of the helm chart
-      required: false
-      default: chart
+    description: Path of the helm chart
+    required: false
+    default: chart
+  disable-checkout:
+    description: Set to true to disable the code checkout step
+    required: false
+    default: false
   service-name:
-      description: Defining service-name for charts
-      required: true
-      default: "${{ github.event.repository.name }}"
+    description: Defining service-name for charts
+    required: true
+    default: "${{ github.event.repository.name }}"
   values-staging:
     description: Helm values for staging
     required: true
@@ -20,7 +24,8 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Post to Slack
+    - if: inputs.disable-checkout != 'true'
+      name: Checkout
       uses: actions/checkout@v3
       with:
         fetch-depth: 0
