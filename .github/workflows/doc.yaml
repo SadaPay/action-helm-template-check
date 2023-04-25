@@ -1,0 +1,10 @@
+name: Generate docs
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  docs:
+    uses: SadaPay/infrastructure-reusable-workflows/.github/workflows/action_doc.yaml@80451d3a91983617b3dc9d209a93f6bc035a925b
